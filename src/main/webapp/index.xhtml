@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <style type="text/css">
+        .value {
+            font-weight: bold;
+        }
+    </style>
+    
+    <h:head>
+        <title>Учёт выданных книг</title>
+        <style type="text/css">    
+            * { margin: 0; padding: 0; }
+            p { padding: 10px; }
+            #left { position: absolute; left: 0; top: 10%; width: 15%; }
+            #right { position: absolute; right: 0; top: 10%; width: 85%; }
+            #header {
+                position: absolute;
+                right: 0;
+                top: 0;
+                height: 10%;
+                width: 100%;
+                text-align: center;
+                color: #000000;
+                font: bold 30px Arial;
+                background-color: #0099cc;
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <div id="header">
+            <p:outputLabel value="Программа учёта книг в библиотеке"/>
+        </div>
+
+        <div id="left">
+            <h:form>
+                <h2><p:outputLabel value="Справочники"/></h2>
+                <p:commandLink value="Справочник книг" action="#{indexController.showBookCatalog()}" ajax="false"></p:commandLink>
+                <br/>
+                <p:commandLink value="Справочник читателей" action="#{indexController.showReaderCatalog()}" ajax="false"></p:commandLink>
+                <br/>
+                <p:commandLink value="Журнал учёта" action="#{indexController.showJournal()}" ajax="false"></p:commandLink>
+                <br/>
+                <br/>
+                <br/>
+                <h2><p:outputLabel value="Отчёты"/></h2>
+                <p:commandLink value="Должники" action="#{indexController.showBadReadersReport()}" ajax="false"></p:commandLink>
+                <br/>
+                <p:commandLink value="Не возвращённые в срок книги" action="#{indexController.showNoReturnBooksReport()}" ajax="false"></p:commandLink>
+                <br/>
+            </h:form>
+        </div>
+
+        <div id="right">
+            <ui:include src="#{indexController.currentForm}"/>
+        </div>    
+
+    </h:body>
+</html>
+

@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <style type="text/css">
+        .value {
+            font-weight: bold;
+        }
+    </style>
+
+    <h:head>
+        <title>Информация о книге</title>
+    </h:head>
+    <h:body>   
+        <f:view>
+            <h:form>
+                <h1>
+                    <p:outputLabel rendered="#{indexController.addRegime}" value="Добавление книги"/>
+                    <p:outputLabel rendered="#{!indexController.addRegime}" value="Редактирование книги"/>
+                </h1>
+
+                <h:panelGrid columns="2">
+                    <p:outputLabel rendered="#{!indexController.addRegime}" value="ID:" for="id"/>
+                    <p:inputText rendered="#{!indexController.addRegime}" id="id" value="#{bookController.b.id}" disabled="true"/>
+
+                    <p:outputLabel value="Автор:" for="author"/>
+                    <p:inputText id="author" value="#{bookController.b.author}" maxlength="50"/>
+
+                    <p:outputLabel value="Название:" for="name"/>
+                    <p:inputText id="name" value="#{bookController.b.name}" maxlength="50"/>
+
+                    <p:outputLabel value="Год:" for="year"/>
+                    <p:inputMask id="year" value="#{bookController.b.year}" maxlength="4" mask="9999"/>
+                </h:panelGrid>
+
+                <p><p:outputLabel value="#{indexController.exceptionMessage}" style="color: red;"/></p>
+
+                <p:commandButton value="Сохранить" rendered="#{indexController.addRegime}" action="#{indexController.addBook(bookController)}" ajax="false"/>
+                <p:commandButton value="Сохранить" rendered="#{!indexController.addRegime}" action="#{indexController.editBook(bookController)}" ajax="false"/>
+
+                <p:commandButton value="Назад" action="#{indexController.showBookCatalog()}" ajax="false"/>
+            </h:form>
+        </f:view>        
+    </h:body>
+</html>

@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <style type="text/css">
+        .value {
+            font-weight: bold;
+        }
+    </style>
+    
+    <h:head>
+        <title>Добавление записи</title>
+    </h:head>
+    <h:body>
+        <f:view>
+            <h:form>
+                <h1>
+                    <p:outputLabel rendered="#{indexController.addRegime}" value="Добавление записи"/>
+                    <p:outputLabel rendered="#{!indexController.addRegime}" value="Редактирование записи"/>
+                </h1>
+                
+                <h:panelGrid columns="2">
+                    <p:outputLabel value="Читатель:" for="readerID"/>
+                    <p:selectOneMenu id="readerID" value="#{libraryController.l.readerID}" converter="SelectItemToEntityConverter" disabled="#{!indexController.addRegime}">
+                        <f:selectItems value="#{indexController.getReadersList(libraryController)}" var="r" itemValue="#{r}" itemLabel="#{r.name}"/>
+                    </p:selectOneMenu>
+                    
+                    <p:outputLabel value="Книга:" for="bookID"/>
+                    <p:selectOneMenu id="bookID" value="#{libraryController.l.bookID}" converter="SelectItemToEntityConverter" disabled="#{!indexController.addRegime}">
+                        <f:selectItems value="#{indexController.getBooksList(libraryController)}" var="b" itemValue="#{b}" itemLabel="#{b.name}"/>
+                    </p:selectOneMenu>
+                    
+                    <p:outputLabel value="Выдана:" for="issueDate"/>
+                    <p:inputMask id="issueDate" value="#{libraryController.l.issueDate}" mask="99.99.9999" disabled="#{!indexController.addRegime}">
+                        <f:convertDateTime pattern="dd.MM.yyyy"/>
+                    </p:inputMask>
+                    
+                    <p:outputLabel value="До:" for="returnDate"/>
+                    <p:inputMask id="returnDate" value="#{libraryController.l.returnDate}" mask="99.99.9999" disabled="#{!indexController.addRegime}">
+                        <f:convertDateTime pattern="dd.MM.yyyy"/>
+                    </p:inputMask>
+                    
+                    <p:outputLabel value="Возвращена:" for="realReturnDate"/>
+                    <p:inputMask id="realReturnDate" value="#{libraryController.l.realReturnDate}" mask="99.99.9999">
+                        <f:convertDateTime pattern="dd.MM.yyyy"/>
+                    </p:inputMask> 
+                </h:panelGrid>
+                
+                <p><p:outputLabel value="#{indexController.exceptionMessage}" style="color: red;"/></p>
+                
+                <p:commandButton rendered="#{indexController.addRegime}" value="Сохранить" action="#{indexController.addLibrary(libraryController)}" ajax="false"/>
+                <p:commandButton rendered="#{!indexController.addRegime}" value="Сохранить" action="#{indexController.editLibrary(libraryController)}" ajax="false"/>
+                
+                <p:commandButton value="Назад" action="#{indexController.showJournal()}" ajax="false"/>
+            </h:form>
+        </f:view>
+    </h:body>
+</html>

@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    
+    <style type="text/css">
+        .value {
+            font-weight: bold;
+        }
+        
+    </style>
+    
+    <h:head>
+        <title>Справочник читателей</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            
+            <p:panelGrid>
+                <p:row>
+                    <p:column colspan="2">
+                        <p:commandButton value="Добавить читателя" action="#{indexController.openAddReaderForm(readerController)}" ajax="false"/>
+                    </p:column>
+                </p:row>
+
+                <p:row>
+                    <p:column>
+                        <p:selectOneMenu id="condition" value="#{readerController.condition}">
+                            <f:selectItems value="#{readerController.conditions}" var="r" itemValue="#{r}" itemLabel="#{r}"/>
+                        </p:selectOneMenu>
+                    </p:column>
+
+                    <p:column colspan="2">
+                        <p:inputText id="findValue" value="#{readerController.findValue}"/>
+                    </p:column>
+                </p:row>
+
+                <p:row>
+                    <p:column>
+                        <p:commandButton value="Найти" action="#{readerController.find()}" update="readersTable"/>
+                    </p:column>
+
+                    <p:column>
+                        <p:commandButton value="Очистить" action="#{readerController.clearFilters()}" update="findValue, readersTable"/>
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+
+            <br/>
+            
+            <p:dataTable var="r" value="#{readerController.readers}" id="readersTable" emptyMessage="Читатели не найдены"
+                         style = "table-layout: fixed" rows="15" paginator="true"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15, 20, 25" selectionMode="single" selection="#{readerController.r}" rowKey="#{r.id}">
+                <p:ajax event="rowSelect" update="editButton, deleteButton" listener="#{readerController.onRowSelect}" />
+                <p:ajax event="rowUnselect" update="editButton, deleteButton" listener="#{readerController.onRowUnselect}" />
+                
+                <p:column headerText="ID" sortBy="#{r.id}">
+                    <p:outputLabel value="#{r.id}"/>
+                </p:column>
+                
+                <p:column headerText="ФИО читателя" sortBy="#{r.name}">
+                    <p:outputLabel value="#{r.name}"/>
+                </p:column>
+                
+                <p:column headerText="№ паспорта" sortBy="#{r.passport}">
+                    <p:outputLabel value="#{r.passport}"/>
+                </p:column>
+
+                <f:facet name="footer">
+                    <p:commandButton id="editButton" process="readersTable" value="Изменить" action="#{indexController.openEditReaderForm()}" ajax="false" disabled="#{readerController.disabled}"/>
+                    <p:commandButton id="deleteButton" process="readersTable" value="Удалить" action="#{readerController.delete()}" onclick="return confirm('Запись будет помечена на удаление. Вы уверены?')" update="readersTable" disabled="#{readerController.disabled}"/>
+                </f:facet>
+            </p:dataTable>
+        </h:form>
+    </h:body>
+</html>
+

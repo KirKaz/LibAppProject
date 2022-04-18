@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <style type="text/css">
+        .value {
+            font-weight: bold;
+        }
+    </style>
+
+    <h:head>
+        <title>Справочник книг</title>
+    </h:head>
+    <h:body>
+        <h:form>       
+            <p:panelGrid>
+                <p:row>
+                    <p:column colspan="2">
+                        <p:commandButton value="Добавить книгу" action="#{indexController.openAddBookForm(bookController)}" ajax="false"/>
+                    </p:column>
+                </p:row>
+
+                <p:row>
+                    <p:column>
+                        <p:selectOneMenu value="#{bookController.condition}">
+                            <f:selectItems value="#{bookController.conditions}" var="book" itemValue="#{book}" itemLabel="#{book}"/>
+                        </p:selectOneMenu>
+                    </p:column>
+
+                    <p:column colspan="2">
+                        <p:inputText id="findVal" value="#{bookController.findVal}"/>
+                    </p:column>
+                </p:row>
+
+                <p:row>
+                    <p:column>
+                        <p:outputLabel value="В наличии: "/>
+                    </p:column>
+
+                    <p:column colspan="2">
+                        <p:selectOneRadio value="#{bookController.inLibraryRegime}" id="inLibRegime">
+                            <f:selectItems value="#{bookController.inLibraryRegimes}" var="regime" itemLabel="#{regime}" itemValue="#{regime}"/>
+                        </p:selectOneRadio>
+                    </p:column>
+                </p:row>
+
+                <p:row>
+                    <p:column>
+                        <p:outputLabel value="Год: "/>
+                    </p:column>
+
+                    <p:column>
+                        <p:inputText id="startYear" value="#{bookController.startYear}"/>
+                    </p:column>
+
+                    <p:column>
+                        <p:outputLabel value="-"/>
+                    </p:column>
+
+                    <p:column>
+                        <p:inputText id="endYear" value="#{bookController.endYear}"/>
+                    </p:column>
+                </p:row>
+
+                <p:row>
+                    <p:column>
+                        <p:commandButton value="Найти" action="#{bookController.find()}" update="booksTable"/>
+                    </p:column>
+
+                    <p:column>
+                        <p:commandButton value="Очистить" action="#{bookController.clearFilters()}" update="findVal, inLibRegime, startYear, endYear, booksTable"/>
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+
+            <br/>
+            
+            <p:dataTable var="b" value="#{bookController.books}" id="booksTable" emptyMessage="Книги не найдены"
+                         style = "table-layout: fixed" rows="15" paginator="true"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15, 20, 25" selectionMode="single" selection="#{bookController.b}" rowKey="#{b.id}">
+                <p:ajax event="rowSelect" update="editButton, deleteButton" listener="#{bookController.onRowSelect}" />
+                <p:ajax event="rowUnselect" update="editButton, deleteButton" listener="#{bookController.onRowUnselect}" />
+                
+                <p:column headerText="ID" sortBy="#{b.id}">
+                    <h:outputLabel value="#{b.id}"/>
+                </p:column>
+                
+                <p:column headerText="Автор" sortBy="#{b.author}">
+                    <h:outputLabel value="#{b.author}"/>
+                </p:column>
+                
+                <p:column headerText="Название" sortBy="#{b.name}">
+                    <h:outputLabel value="#{b.name}"/>
+                </p:column>
+                
+                <p:column headerText="Год" sortBy="#{b.year}">
+                    <h:outputLabel value="#{b.year}"/>
+                </p:column>
+                
+                <p:column headerText="Наличие" sortBy="#{b.inLibrary}">
+                    <h:outputLabel rendered="#{b.inLibrary}" value="Да"/>
+                    <h:outputLabel rendered="#{!(b.inLibrary)}" value="Нет"/>
+                </p:column>
+
+                <f:facet name="footer">
+                    <p:commandButton id="editButton" process="booksTable" value="Изменить" action="#{indexController.openEditBookForm()}" ajax="false" disabled="#{bookController.disabled}"/>
+                    <p:commandButton id="deleteButton" process="booksTable" value="Удалить" action="#{bookController.delete()}" onclick="return confirm('Запись будет помечена на удаление. Вы уверены?')" disabled="#{bookController.disabled}"/>
+                </f:facet>
+            </p:dataTable>
+        </h:form>
+    </h:body>
+</html>
+

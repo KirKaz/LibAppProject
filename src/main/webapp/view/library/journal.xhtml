@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <style type="text/css">
+        .value {
+            font-weight: bold;
+        }
+    </style>
+
+    <h:head>
+        <title>Журнал учёта</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            
+            <p:panelGrid>
+                    <p:row>
+                        <p:column colspan="2">
+                            <p:commandButton value="Добавить запись" action="#{indexController.openAddJournalEntryForm(libraryController)}" ajax="false"/>
+                        </p:column>
+                    </p:row>
+                    
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="Читатель: "/>
+                        </p:column>
+                        
+                        <p:column colspan="2">
+                            <p:inputText id="findReaderName" value="#{libraryController.findReaderName}"/>
+                        </p:column>
+                    </p:row>
+                    
+                    <p:row>
+                        <p:column>
+                            <p:outputLabel value="Книга: "/>
+                        </p:column>
+                        
+                        <p:column colspan="2">
+                            <p:inputText id="findBookName" value="#{libraryController.findBookName}"/>
+                        </p:column>
+                    </p:row>
+                    
+                    <p:row>
+                        <p:column>
+                            <p:selectOneMenu value="#{libraryController.regime}">
+                                <f:selectItems value="#{libraryController.regimes}" var="regime" itemValue="#{regime}" itemLabel="#{regime}"/>
+                            </p:selectOneMenu>
+                        </p:column>
+                        
+                        <p:column>
+                            <p:inputMask id="startDate" value="#{libraryController.startDate}" mask="99.99.9999">
+                                <f:convertDateTime pattern="dd.MM.yyyy"/>
+                            </p:inputMask>
+                        </p:column>
+                        
+                        <p:column>
+                            <p:outputLabel value="-"/>
+                        </p:column>
+                        
+                        <p:column>
+                            <p:inputMask id="endDate" value="#{libraryController.endDate}" mask="99.99.9999">
+                                <f:convertDateTime pattern="dd.MM.yyyy"/>
+                            </p:inputMask>
+                        </p:column>
+                    </p:row>
+                    
+                    <p:row>
+                        <p:column>
+                            <p:commandButton value="Найти" action="#{libraryController.find()}" update="journal"/>
+                        </p:column>
+                        
+                        <p:column>
+                            <p:commandButton value="Очистить" action="#{libraryController.clearFilters()}" update="findReaderName, findBookName, startDate, endDate, journal"/>
+                        </p:column>
+                    </p:row>
+            </p:panelGrid>
+
+            <br/>
+            
+            <p:dataTable var="l" value="#{libraryController.libraries}" id="journal" emptyMessage="Записи не найдены"
+                         style = "table-layout: fixed" rows="15" paginator="true"
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15, 20, 25" selectionMode="single" selection="#{libraryController.l}" rowKey="#{l.id}">
+                <p:ajax event="rowSelect" update="editButton" listener="#{libraryController.onRowSelect}" />
+                <p:ajax event="rowUnselect" update="editButton" listener="#{libraryController.onRowUnselect}" />
+
+                <p:column headerText="Книга" sortBy="#{l.bookID.name}">
+                    <p:outputLabel value="#{l.bookID}"/>
+                </p:column>
+
+                <p:column headerText="Читатель" sortBy="#{l.readerID.name}">
+                    <p:outputLabel value="#{l.readerID}"/>
+                </p:column>
+
+                <p:column headerText="Выдана" sortBy="#{l.issueDate}">
+                    <p:outputLabel value="#{l.issueDate}">
+                        <f:convertDateTime pattern="dd.MM.yyyy"/>
+                    </p:outputLabel>
+                </p:column>
+
+                <p:column headerText="До" sortBy="#{l.returnDate}">
+                    <p:outputLabel value="#{l.returnDate}">
+                        <f:convertDateTime pattern="dd.MM.yyyy"/>
+                    </p:outputLabel>
+                </p:column>
+
+                <p:column headerText="Возвращена" sortBy="#{l.realReturnDate}">
+                    <p:outputLabel value="#{l.realReturnDate}">
+                        <f:convertDateTime pattern="dd.MM.yyyy"/>
+                    </p:outputLabel>
+                </p:column>
+
+                <f:facet name="footer">
+                    <p:commandButton id="editButton" process="journal" value="Изменить" action="#{indexController.openEditJournalEntryForm()}" ajax="false" disabled="#{libraryController.disabled}"/>
+                </f:facet>
+            </p:dataTable>
+        </h:form>
+    </h:body>
+</html>
+
